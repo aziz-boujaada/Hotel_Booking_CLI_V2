@@ -1,4 +1,4 @@
-package main.java.Models;
+package Models;
 
 import Enums.PaymentMethod;
 import Enums.PaymentStatus;
