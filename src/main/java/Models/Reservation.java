@@ -1,7 +1,7 @@
-package main.java.Models;
+package Models;
 
-import main.java.DTOs.UserDto;
-import main.java.Enums.ReservationStatus;
+import DTOs.UserDto;
+import Enums.ReservationStatus;
 
 import java.time.LocalDate;
 import java.util.UUID;

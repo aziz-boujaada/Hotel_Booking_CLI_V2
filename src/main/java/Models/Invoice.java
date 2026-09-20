@@ -1,5 +1,7 @@
 package Models;
 
+import Enums.InvoiceStatus;
+
 public class Invoice {
     private Payment payment ;
     private InvoiceStatus invoiceStatus;

@@ -1,8 +1,8 @@
-package main.java.Repositories.impl;
+package Repositories.impl;
 
-import main.java.Models.Reservation;
-import main.java.Models.User;
-import main.java.Repositories.ReservationRepository;
+import  Models.Reservation;
+import  Models.User;
+import Repositories.ReservationRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,13 +1,13 @@
-package main.java.Services;
+package Services;
 
-import main.java.Enums.ReservationStatus;
-import main.java.Enums.RoomStatus;
-import main.java.Models.Reservation;
-import main.java.Models.Room;
-import main.java.Models.User;
-import main.java.Repositories.impl.InMemoryReservationRepo;
-import main.java.Repositories.impl.InMemoryRoomRepo;
-import main.java.Utils.DatesUtil;
+import  Enums.ReservationStatus;
+import  Enums.RoomStatus;
+import  Models.Reservation;
+import  Models.Room;
+import  Models.User;
+import Repositories.impl.InMemoryReservationRepo;
+import Repositories.impl.InMemoryRoomRepo;
+import  Utils.DatesUtil;
 
 import java.time.LocalDate;
 import java.util.List;

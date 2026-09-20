@@ -1,15 +1,15 @@
-package main.java.Utils;
+package Utils;
 
-import main.java.Enums.RoomStatus;
-import main.java.Enums.RoomType;
-import main.java.Enums.UserRole;
-import main.java.Helpers.InputsReader;
-import main.java.Models.Reservation;
-import main.java.Models.Room;
-import main.java.Models.User;
-import main.java.Services.AuthService;
-import main.java.Services.ReservationService;
-import main.java.Services.RoomService;
+import  Enums.RoomStatus;
+import  Enums.RoomType;
+import  Enums.UserRole;
+import Helpers.InputsReader;
+import Models.Reservation;
+import Models.Room;
+import Models.User;
+import Services.AuthService;
+import Services.ReservationService;
+import Services.RoomService;
 
 import java.util.List;
 import java.util.Scanner;

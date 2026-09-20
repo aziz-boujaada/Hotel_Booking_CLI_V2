@@ -1,17 +1,44 @@
-package main.java.Repositories.impl;
+package Repositories.impl;
 
-import main.java.Models.User;
-import main.java.Repositories.UserRepository;
+import Config.DatabaseConfig;
+import  Models.User;
+import Repositories.UserRepository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 public class InMemoryUserRepo implements UserRepository {
 
+    private DatabaseConfig databaseConfig;
+
+    public InMemoryUserRepo(DatabaseConfig databaseConfig){
+        this.databaseConfig = databaseConfig ;
+    }
     private static final HashMap<String , User> users = new HashMap<>();
 
     @Override
     public User save(User user){
-        users.put(user.getId(), user);
+        String sql = """
+                INSERT INTO users( id , full_name , email ,phone , password , is_logged , role)
+                VALUES(?, ?, ?, ?, crypt(? , gen_salt('bf')), ?, ? )
+                """;
+        try(Connection connection = databaseConfig.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, user.getId());
+            statement.setString(2, user.getFullName());
+            statement.setString(3, user.getEmail());
+            statement.setString(4, user.getPhone());
+            statement.setString(5, user.getPassword());
+            statement.setBoolean(6,user.isLogged());
+            statement.setString(7, user.getRole().name());
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Save User Failed ",e);
+        }
 
         return  user;
     }

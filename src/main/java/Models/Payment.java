@@ -2,7 +2,7 @@ package Models;
 
 import Enums.PaymentMethod;
 import Enums.PaymentStatus;
-import main.java.Models.Reservation;
+
 import java.time.LocalDateTime;
 
 public class Payment {

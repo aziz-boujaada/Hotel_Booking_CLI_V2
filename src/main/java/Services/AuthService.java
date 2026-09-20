@@ -1,10 +1,11 @@
-package main.java.Services;
+package Services;
 
-import main.java.Enums.UserRole;
-import main.java.Models.User;
+import Config.DatabaseConfig;
+import  Enums.UserRole;
+import  Models.User;
 
-import main.java.Repositories.impl.InMemoryUserRepo;
-import main.java.Utils.InputValidation;
+import Repositories.impl.InMemoryUserRepo;
+import  Utils.InputValidation;
 
 import java.util.Optional;
 
@@ -15,10 +16,12 @@ public class AuthService {
 
     private final InputValidation validator;
     private final InMemoryUserRepo userRepo;
+    private final DatabaseConfig databaseConfig;
 
-    public AuthService() {
+    public AuthService(DatabaseConfig databaseConfig) {
+        this.databaseConfig = databaseConfig;
         this.validator = new InputValidation();
-        this.userRepo = new InMemoryUserRepo();
+        this.userRepo = new InMemoryUserRepo(databaseConfig);
     }
 
     // REGISTER

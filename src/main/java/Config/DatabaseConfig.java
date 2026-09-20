@@ -1,18 +1,50 @@
 package Config;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
+
 
 public class DatabaseConfig {
-    private static final String URL =
-            "jdbc:postgresql://localhost:5432/test";
+    private static volatile DatabaseConfig instance;
+    private Connection connection;
 
-    private static final String USER = "aziz";
+    private DatabaseConfig() {
+        try {
+// Chargement de la configuration via db.properties
+            Properties props = new Properties();
+            try (InputStream input = getClass().getClassLoader().getResourceAsStream("db.properties")) {
+                if (input == null) {
+                    throw new RuntimeException(
+                            "db.properties introuvable dans src/main/resources"
+                    );
+                }
+                props.load(input);
+            }
+            this.connection = DriverManager.getConnection(
+                    props.getProperty("db.url"),
+                    props.getProperty("db.user"),
+                    props.getProperty("db.password")
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur critique de connexion JDBC : " + e.getMessage(), e);
+        }
+    }
 
-    private static final String PASSWORD = "regex!";
+    public static DatabaseConfig getInstance() {
+        if (instance == null) {
+            synchronized (DatabaseConfig.class) {
+                if (instance == null) {
+                    instance = new DatabaseConfig();
+                }
+            }
+        }
+        return instance;
+    }
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    public Connection getConnection() {
+        return connection;
     }
 }

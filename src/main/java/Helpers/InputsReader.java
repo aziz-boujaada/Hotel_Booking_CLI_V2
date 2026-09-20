@@ -1,4 +1,4 @@
-package main.java.Helpers;
+package Helpers;
 
 import java.util.Scanner;
 

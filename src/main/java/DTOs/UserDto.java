@@ -1,6 +1,6 @@
-package main.java.DTOs;
+package DTOs;
 
-import main.java.Models.User;
+import Models.User;
 
 public class UserDto {
     public final String fullName;

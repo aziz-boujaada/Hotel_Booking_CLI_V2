@@ -1,15 +1,15 @@
-package main.java.ConsoleUI;
+package ConsoleUI;
 
-import main.java.Midllewares.AdminMiddleware;
-import main.java.Models.Reservation;
-import main.java.Models.Room;
-import main.java.Models.User;
-import main.java.Repositories.impl.InMemoryReservationRepo;
-import main.java.Repositories.impl.InMemoryRoomRepo;
-import main.java.Services.AuthService;
-import main.java.Services.ReservationService;
-import main.java.Services.RoomService;
-import main.java.Utils.InputsUtil;
+import Midllewares.AdminMiddleware;
+import  Models.Reservation;
+import  Models.Room;
+import  Models.User;
+import Repositories.impl.InMemoryReservationRepo;
+import Repositories.impl.InMemoryRoomRepo;
+import  Services.AuthService;
+import  Services.ReservationService;
+import  Services.RoomService;
+import  Utils.InputsUtil;
 
 import java.util.InputMismatchException;
 import java.util.List;

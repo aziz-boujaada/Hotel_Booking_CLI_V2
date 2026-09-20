@@ -1,6 +1,6 @@
-package main.java.Models;
+package Models;
 
-import main.java.Enums.UserRole;
+import Enums.UserRole;
 
 import java.util.UUID;
 

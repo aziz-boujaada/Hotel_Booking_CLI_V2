@@ -1,7 +1,7 @@
-package main.java.Midllewares;
+package Midllewares;
 
-import main.java.Enums.UserRole;
-import main.java.Models.User;
+import  Enums.UserRole;
+import  Models.User;
 
 public class AdminMiddleware {
 

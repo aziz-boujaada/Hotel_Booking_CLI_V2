@@ -1,7 +1,7 @@
-package main.java.Models;
+package Models;
 
-import main.java.Enums.RoomStatus;
-import main.java.Enums.RoomType;
+import Enums.RoomStatus;
+import Enums.RoomType;
 
 import java.util.UUID;
 

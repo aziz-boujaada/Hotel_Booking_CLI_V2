@@ -1,7 +1,8 @@
-package main.java.Repositories.impl;
+package Repositories.impl;
 
-import main.java.Models.Room;
-import main.java.Repositories.RoomRepository;
+import Config.DatabaseConfig;
+import  Models.Room;
+import Repositories.RoomRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +11,10 @@ import java.util.Optional;
 
 public class InMemoryRoomRepo implements RoomRepository {
 
+    private  final DatabaseConfig databaseConfig;
+    public InMemoryRoomRepo(DatabaseConfig databaseConfig){
+        this.databaseConfig = databaseConfig ;
+    }
     private static final HashMap<String, Room> rooms = new HashMap<>();
 
     @Override

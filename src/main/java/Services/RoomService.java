@@ -1,10 +1,10 @@
-package main.java.Services;
+package Services;
 
-import main.java.Enums.RoomStatus;
-import main.java.Enums.RoomType;
-import main.java.Models.Room;
-import main.java.Repositories.impl.InMemoryRoomRepo;
-import main.java.Utils.MoneyUtil;
+import  Enums.RoomStatus;
+import  Enums.RoomType;
+import  Models.Room;
+import Repositories.impl.InMemoryRoomRepo;
+import  Utils.MoneyUtil;
 
 import java.util.List;
 
@@ -14,9 +14,9 @@ public class RoomService {
     private final MoneyUtil moneyUtil ;
     private final InMemoryRoomRepo roomRepo ;
 
-    public RoomService(){
+    public RoomService(InMemoryRoomRepo roomRepo){
         this.moneyUtil = new MoneyUtil();
-        this.roomRepo = new InMemoryRoomRepo();
+        this.roomRepo = roomRepo;
     }
 
     public Room addRoom(RoomType roomType , double nightPrice , int capacity , RoomStatus roomStatus){

@@ -1,7 +1,7 @@
-package main.java.Repositories;
+package Repositories;
 
-import main.java.Models.Reservation;
-import main.java.Models.User;
+import  Models.Reservation;
+import  Models.User;
 
 import java.util.List;
 
