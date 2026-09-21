@@ -16,7 +16,15 @@ public class User {
 
     private static  int counter = 0 ;
 
-    public User(String id , String fullName , String email , String phone , Boolean isLogged,String password,UserRole role){
+    // Create new User
+    public User(
+            String fullName,
+            String email,
+            String phone,
+            Boolean isLogged,
+            String password,
+            UserRole role
+    ) {
         this.id = generateID();
         this.fullName = fullName;
         this.email = email;
@@ -25,6 +33,26 @@ public class User {
         this.password = password;
         this.role = role;
     }
+
+    // Reconstruct User from database
+    public User(
+            String id,
+            String fullName,
+            String email,
+            String phone,
+            Boolean isLogged,
+            String password,
+            UserRole role
+    ) {
+        this.id = id;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.isLogged = isLogged;
+        this.password = password;
+        this.role = role;
+    }
+
 
 
     public String generateID(){

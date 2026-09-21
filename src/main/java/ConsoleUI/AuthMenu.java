@@ -1,8 +1,8 @@
 package ConsoleUI;
 
 import  Models.User;
-import Repositories.impl.InMemoryReservationRepo;
-import Repositories.impl.InMemoryRoomRepo;
+import Repositories.impl.JdbcReservationRepo;
+import Repositories.impl.JdbcRoomRepo;
 import  Services.AuthService;
 import  Services.ReservationService;
 import  Services.RoomService;
@@ -16,9 +16,9 @@ public class AuthMenu {
 
     private final AuthService authService;
     private final InputsUtil inputsUtil;
-    private final InMemoryRoomRepo roomRepo;
+    private final JdbcRoomRepo roomRepo;
     private final RoomService roomService;
-    private final InMemoryReservationRepo reservationRepo;
+    private final JdbcReservationRepo reservationRepo;
     private final ReservationService reservationService;
     private final RoomManagmentMenu roomManagmentMenu;
 
@@ -26,9 +26,9 @@ public class AuthMenu {
     public AuthMenu(
             AuthService authService,
             InputsUtil inputsUtil,
-            InMemoryRoomRepo roomRepo,
+            JdbcRoomRepo roomRepo,
             RoomService roomService,
-            InMemoryReservationRepo reservationRepo,
+            JdbcReservationRepo reservationRepo,
             ReservationService reservationService,
             RoomManagmentMenu roomManagmentMenu
     ) {

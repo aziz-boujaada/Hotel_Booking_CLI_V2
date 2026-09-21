@@ -4,7 +4,7 @@ import Config.DatabaseConfig;
 import  Enums.UserRole;
 import  Models.User;
 
-import Repositories.impl.InMemoryUserRepo;
+import Repositories.impl.JdbcUserRepo;
 import  Utils.InputValidation;
 
 import java.util.Optional;
@@ -15,13 +15,13 @@ public class AuthService {
     private User loggedUser;
 
     private final InputValidation validator;
-    private final InMemoryUserRepo userRepo;
+    private final JdbcUserRepo userRepo;
     private final DatabaseConfig databaseConfig;
 
     public AuthService(DatabaseConfig databaseConfig) {
         this.databaseConfig = databaseConfig;
         this.validator = new InputValidation();
-        this.userRepo = new InMemoryUserRepo(databaseConfig);
+        this.userRepo = new JdbcUserRepo(databaseConfig);
     }
 
     // REGISTER
@@ -31,7 +31,7 @@ public class AuthService {
         validator.validateEmail(email);
         validator.validatePassword(password);
 
-        User user = new User(null, fullName, email, phone, false, password, role);
+        User user = new User(fullName, email, phone, false, password, role);
 
         return userRepo.save(user);
     }
@@ -50,9 +50,7 @@ public class AuthService {
 
         User user = optionalUser.get();
 
-
-        user.setLogged(true);
-        loggedUser = user;
+       System.out.println(loggedUser = user);
         return user;
 
     }
