@@ -42,17 +42,14 @@ public class AuthService {
         validator.validateEmail(email);
         validator.validatePassword(password);
 
-        Optional<User> optionalUser = userRepo.findByEmail(email);
+        Optional<User> optionalUser = userRepo.login(email , password);
 
         if (optionalUser.isEmpty()) {
-            throw new IllegalArgumentException("this email does not exist");
+            throw new IllegalArgumentException("email or password incorrect");
         }
 
         User user = optionalUser.get();
 
-        if (!user.getPassword().equals(password)) {
-            throw new IllegalArgumentException("incorrect password");
-        }
 
         user.setLogged(true);
         loggedUser = user;

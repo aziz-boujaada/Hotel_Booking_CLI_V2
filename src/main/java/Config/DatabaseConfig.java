@@ -8,32 +8,43 @@ import java.util.Properties;
 
 
 public class DatabaseConfig {
+
     private static volatile DatabaseConfig instance;
-    private Connection connection;
+
+    private final String url;
+    private final String username;
+    private final String password;
 
     private DatabaseConfig() {
         try {
-// Chargement de la configuration via db.properties
             Properties props = new Properties();
-            try (InputStream input = getClass().getClassLoader().getResourceAsStream("db.properties")) {
+
+            try (InputStream input =
+                         getClass().getClassLoader().getResourceAsStream("db.properties")) {
+
                 if (input == null) {
                     throw new RuntimeException(
                             "db.properties introuvable dans src/main/resources"
                     );
                 }
+
                 props.load(input);
             }
-            this.connection = DriverManager.getConnection(
-                    props.getProperty("db.url"),
-                    props.getProperty("db.user"),
-                    props.getProperty("db.password")
-            );
+
+            this.url = props.getProperty("db.url");
+            this.username = props.getProperty("db.user");
+            this.password = props.getProperty("db.password");
+
         } catch (Exception e) {
-            throw new RuntimeException("Erreur critique de connexion JDBC : " + e.getMessage(), e);
+            throw new RuntimeException(
+                    "Erreur critique de configuration JDBC : " + e.getMessage(),
+                    e
+            );
         }
     }
 
     public static DatabaseConfig getInstance() {
+
         if (instance == null) {
             synchronized (DatabaseConfig.class) {
                 if (instance == null) {
@@ -41,10 +52,15 @@ public class DatabaseConfig {
                 }
             }
         }
+
         return instance;
     }
 
-    public Connection getConnection() {
-        return connection;
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(
+                url,
+                username,
+                password
+        );
     }
 }
