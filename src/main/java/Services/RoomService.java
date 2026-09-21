@@ -3,7 +3,7 @@ package Services;
 import  Enums.RoomStatus;
 import  Enums.RoomType;
 import  Models.Room;
-import Repositories.impl.InMemoryRoomRepo;
+import Repositories.impl.JdbcRoomRepo;
 import  Utils.MoneyUtil;
 
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.List;
 public class RoomService {
 
     private final MoneyUtil moneyUtil ;
-    private final InMemoryRoomRepo roomRepo ;
+    private final JdbcRoomRepo roomRepo ;
 
-    public RoomService(InMemoryRoomRepo roomRepo){
+    public RoomService(JdbcRoomRepo roomRepo){
         this.moneyUtil = new MoneyUtil();
         this.roomRepo = roomRepo;
     }
