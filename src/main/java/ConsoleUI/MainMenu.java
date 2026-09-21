@@ -4,8 +4,8 @@ import Midllewares.AdminMiddleware;
 import  Models.Reservation;
 import  Models.Room;
 import  Models.User;
-import Repositories.impl.InMemoryReservationRepo;
-import Repositories.impl.InMemoryRoomRepo;
+import Repositories.impl.JdbcReservationRepo;
+import Repositories.impl.JdbcRoomRepo;
 import  Services.AuthService;
 import  Services.ReservationService;
 import  Services.RoomService;
@@ -21,10 +21,10 @@ public class MainMenu {
     private final User loggedUser;
     private final InputsUtil inputsUtil;
     private final AdminMiddleware adminMiddleware;
-    private final InMemoryRoomRepo roomRepo;
+    private final JdbcRoomRepo roomRepo;
     private final RoomService roomService;
     private final ReservationService reservationService;
-    private final InMemoryReservationRepo reservationRepository;
+    private final JdbcReservationRepo reservationRepository;
     private final RoomManagmentMenu roomManagmentMenu;
     private final Scanner scanner;
 
@@ -32,9 +32,9 @@ public class MainMenu {
     public MainMenu(
                     User loggedUser,
                     AuthService authService ,
-                    InMemoryRoomRepo inMemoryRoomRepo ,
+                    JdbcRoomRepo inMemoryRoomRepo ,
                     RoomService roomService,
-                    InMemoryReservationRepo reservationRepo,
+                    JdbcReservationRepo reservationRepo,
                     ReservationService reservationService,
                     InputsUtil inputsUtil,
                     RoomManagmentMenu roomManagmentMenu

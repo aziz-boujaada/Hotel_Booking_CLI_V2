@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InMemoryReservationRepo implements ReservationRepository {
+public class JdbcReservationRepo implements ReservationRepository {
 
     private static final HashMap<String, Reservation> reservations = new HashMap<>();
 
-    public InMemoryReservationRepo() {
+    public JdbcReservationRepo() {
     }
 
     public Reservation save(Reservation reservation) {

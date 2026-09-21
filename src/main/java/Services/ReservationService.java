@@ -5,8 +5,8 @@ import  Enums.RoomStatus;
 import  Models.Reservation;
 import  Models.Room;
 import  Models.User;
-import Repositories.impl.InMemoryReservationRepo;
-import Repositories.impl.InMemoryRoomRepo;
+import Repositories.impl.JdbcReservationRepo;
+import Repositories.impl.JdbcRoomRepo;
 import  Utils.DatesUtil;
 
 import java.time.LocalDate;
@@ -15,15 +15,15 @@ import java.util.Optional;
 
 public class ReservationService {
 
-    private final InMemoryRoomRepo roomRepository;
-    private final InMemoryReservationRepo reservationRepo;
+    private final JdbcRoomRepo roomRepository;
+    private final JdbcReservationRepo reservationRepo;
     private final DatesUtil datesUtil;
     private final AuthService authService;
 
     public ReservationService(
             AuthService authService,
-            InMemoryReservationRepo reservationRepo,
-            InMemoryRoomRepo roomRepo,
+            JdbcReservationRepo reservationRepo,
+            JdbcRoomRepo roomRepo,
             DatesUtil datesUtil
     ) {
         this.roomRepository = roomRepo;

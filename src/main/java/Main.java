@@ -1,8 +1,8 @@
 import Config.DatabaseConfig;
 import  ConsoleUI.AuthMenu;
 import  ConsoleUI.RoomManagmentMenu;
-import Repositories.impl.InMemoryReservationRepo;
-import Repositories.impl.InMemoryRoomRepo;
+import Repositories.impl.JdbcReservationRepo;
+import Repositories.impl.JdbcRoomRepo;
 import  Services.AuthService;
 import  Services.ReservationService;
 import  Services.RoomService;
@@ -14,8 +14,8 @@ public class Main {
         DatabaseConfig databaseConfig = DatabaseConfig.getInstance();
         AuthService authService = new AuthService(databaseConfig);
 
-        InMemoryRoomRepo roomRepo = new InMemoryRoomRepo(databaseConfig);
-        InMemoryReservationRepo reservationRepo = new InMemoryReservationRepo();
+        JdbcRoomRepo roomRepo = new JdbcRoomRepo(databaseConfig);
+        JdbcReservationRepo reservationRepo = new JdbcReservationRepo();
 
         DatesUtil datesUtil = new DatesUtil();
         RoomService roomService = new RoomService(roomRepo);
