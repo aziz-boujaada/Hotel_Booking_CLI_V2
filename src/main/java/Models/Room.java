@@ -24,6 +24,14 @@ public class Room {
         this.roomStatus = roomStatus;
     }
 
+    public Room(String identify , RoomType roomType, double nightPrice, int capacity, RoomStatus roomStatus) {
+        this.identify = identify;
+        this.roomType = roomType;
+        this.nightPrice = nightPrice;
+        this.capacity = capacity;
+        this.roomStatus = roomStatus;
+    }
+
 
     // generate unique identify to room
     public String generateRoomID(){

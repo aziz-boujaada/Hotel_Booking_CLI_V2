@@ -1,8 +1,10 @@
 import Config.DatabaseConfig;
 import  ConsoleUI.AuthMenu;
 import  ConsoleUI.RoomManagmentMenu;
+import Repositories.UserRepository;
 import Repositories.impl.JdbcReservationRepo;
 import Repositories.impl.JdbcRoomRepo;
+import Repositories.impl.JdbcUserRepo;
 import  Services.AuthService;
 import  Services.ReservationService;
 import  Services.RoomService;
@@ -12,10 +14,13 @@ import  Utils.InputsUtil;
 public class Main {
     public static void main(String[] args) {
         DatabaseConfig databaseConfig = DatabaseConfig.getInstance();
-        AuthService authService = new AuthService(databaseConfig);
+
+        JdbcUserRepo  userRepository = new JdbcUserRepo(databaseConfig) ;
+
+        AuthService authService = new AuthService(databaseConfig, userRepository);
 
         JdbcRoomRepo roomRepo = new JdbcRoomRepo(databaseConfig);
-        JdbcReservationRepo reservationRepo = new JdbcReservationRepo();
+        JdbcReservationRepo reservationRepo = new JdbcReservationRepo(databaseConfig,userRepository,roomRepo);
 
         DatesUtil datesUtil = new DatesUtil();
         RoomService roomService = new RoomService(roomRepo);

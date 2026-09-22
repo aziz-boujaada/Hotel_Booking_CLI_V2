@@ -18,10 +18,10 @@ public class AuthService {
     private final JdbcUserRepo userRepo;
     private final DatabaseConfig databaseConfig;
 
-    public AuthService(DatabaseConfig databaseConfig) {
+    public AuthService(DatabaseConfig databaseConfig , JdbcUserRepo jdbcUserRepo) {
         this.databaseConfig = databaseConfig;
         this.validator = new InputValidation();
-        this.userRepo = new JdbcUserRepo(databaseConfig);
+        this.userRepo = jdbcUserRepo;
     }
 
     // REGISTER

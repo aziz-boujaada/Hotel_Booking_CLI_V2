@@ -1,6 +1,8 @@
 package Repositories.impl;
 
 import Config.DatabaseConfig;
+import Helpers.SearchByParam;
+import Helpers.ShowAll;
 import Mappers.RoomMapper;
 import Models.Room;
 import Repositories.RoomRepository;
@@ -53,36 +55,21 @@ public class JdbcRoomRepo implements RoomRepository {
 
     @Override
     public List<Room> showAllRooms() {
-        List<Room> roomList = new ArrayList<>();
+
         String sql = """
                 SELECT * FROM rooms
                 """;
-
-        try (
-                Connection connection = databaseConfig.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql);
-                ResultSet resultSet = statement.executeQuery()
-        ) {
-
-            while (resultSet.next()){
-                roomList.add(RoomMapper.map(resultSet));
-            }
-        return roomList;
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+         return ShowAll.showAll(null , sql , databaseConfig , RoomMapper::map);
 
     }
 
     @Override
     public Optional<Room> findById(String id) {
-        for (Room room : rooms.values()) {
-            if (room.getIdentify().equalsIgnoreCase(id)) {
-                return Optional.of(room);
-            }
-        }
-        return Optional.empty();
+        String sql =  """
+                   SELECT * FROM rooms WHERE room_id = ?
+                """;
+
+        return SearchByParam.searchByParameter(id , sql , databaseConfig, RoomMapper::map);
     }
 
 }

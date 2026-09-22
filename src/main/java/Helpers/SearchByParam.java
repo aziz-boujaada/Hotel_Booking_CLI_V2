@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 
-
 public class SearchByParam {
 
     public  static <T>  Optional<T> searchByParameter(
@@ -20,24 +19,28 @@ public class SearchByParam {
             ResultSetMapper<T> mapper
             ){
 
-        try (
-                Connection connection = databaseConfig.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query)
-        ) {
-            statement.setString(1, parameter);
+        try {
 
-            try (ResultSet resultSet = statement.executeQuery()) {
+            Connection connection = databaseConfig.getConnection();
+            try (
+                    PreparedStatement statement = connection.prepareStatement(query)
+            ) {
+                statement.setString(1, parameter);
 
-                if (!resultSet.next()) {
-                    return Optional.empty();
+                try (ResultSet resultSet = statement.executeQuery()) {
+
+                    if (!resultSet.next()) {
+                        return Optional.empty();
+                    }
+
+                    return Optional.of(mapper.map(resultSet));
                 }
-
-                return Optional.of(mapper.map(resultSet));
             }
-
         } catch (SQLException e) {
             throw new RuntimeException("nothing found by this parameter ", e);
         }
     }
-    private SearchByParam() {}
+
+    private SearchByParam() {
+    }
 }

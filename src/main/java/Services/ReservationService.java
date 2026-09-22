@@ -87,10 +87,11 @@ public class ReservationService {
     }
 
     public Reservation updateReservation(String reservationId, String newCheckIn, String newCheckOut, int newPersonsNumber) {
-        Reservation reservation = reservationRepo.findById(reservationId);
-        if (reservation == null) {
+        Optional<Reservation> OptionalReservation = reservationRepo.findById(reservationId);
+        if (OptionalReservation.isEmpty()) {
             throw new IllegalArgumentException("Reservation not found.");
         }
+          Reservation reservation = OptionalReservation.get();
 
         if (!reservation.getClient().getId().equals(authService.getLoggedUser().getId())) {
             throw new IllegalArgumentException("You can only update your own reservation.");
@@ -123,10 +124,11 @@ public class ReservationService {
     }
 
     public boolean cancelReservation(String reservationId) {
-        Reservation reservation = reservationRepo.findById(reservationId);
-        if (reservation == null) {
+        Optional<Reservation> OptionalReservation = reservationRepo.findById(reservationId);
+        if (OptionalReservation.isEmpty()) {
             throw new IllegalArgumentException("Reservation not found.");
         }
+         Reservation reservation = OptionalReservation.get();
 
         if (!reservation.getClient().getId().equals(authService.getLoggedUser().getId())) {
             throw new IllegalArgumentException("You can only cancel your own reservation.");

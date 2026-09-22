@@ -10,6 +10,7 @@ import java.sql.SQLException;
 public class RoomMapper {
     public static Room map(ResultSet resultSet)throws SQLException {
          return new Room(
+                 resultSet.getString("room_id"),
                  RoomType.valueOf(resultSet.getString("room_type")),
                  resultSet.getDouble("night_price"),
                  resultSet.getInt("capacity"),

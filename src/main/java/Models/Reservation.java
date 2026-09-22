@@ -32,6 +32,19 @@ public class Reservation {
         this.status = status;
     }
 
+    //
+    public Reservation(String reservationID , User client, Room room, LocalDate checkIn, LocalDate checkOut, long nights, double total, int personneNumbers, ReservationStatus status) {
+        this.reservationID = reservationID;
+        this.client = client;
+        this.room = room;
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+        this.nights = nights;
+        this.total = total;
+        this.personneNumbers = personneNumbers;
+        this.status = status;
+    }
+
 
     // generate unique identify to room
     public String generateReservationID() {
