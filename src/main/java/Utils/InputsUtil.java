@@ -1,16 +1,20 @@
 package Utils;
 
-import  Enums.RoomStatus;
-import  Enums.RoomType;
-import  Enums.UserRole;
+import Enums.*;
 import Helpers.InputsReader;
+import Models.Payment;
 import Models.Reservation;
 import Models.Room;
 import Models.User;
+import Repositories.PaymentRepository;
+import Repositories.ReservationTransactions;
+import Repositories.impl.ReservationTransactionsJdbc;
 import Services.AuthService;
+import Services.PaymentService;
 import Services.ReservationService;
 import Services.RoomService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,14 +23,24 @@ public class InputsUtil {
     private final AuthService authService;
     private final RoomService roomService;
     private final ReservationService reservationService;
+    private final PaymentService paymentService;
+    private final ReservationTransactionsJdbc reservationTransactions;
     private final InputsReader inputsReader;
     private final Scanner scanner;
 
-    public InputsUtil(AuthService authService, ReservationService reservationService, RoomService roomService) {
+    public InputsUtil(
+            AuthService authService,
+            ReservationService reservationService,
+            RoomService roomService ,
+            ReservationTransactionsJdbc reservationTransactions
+
+    ) {
         this.authService = authService;
         this.roomService = roomService;
         this.reservationService = reservationService;
         this.inputsReader = new InputsReader();
+        this.paymentService = new PaymentService();
+        this.reservationTransactions = reservationTransactions;
 
         this.scanner = new Scanner(System.in);
     }
@@ -192,6 +206,13 @@ public class InputsUtil {
             int personsNumber = inputsReader.readPositiveInt("Enter number of persons: ");
 
             Reservation reservation = reservationService.addNewReservation(roomID, checkIn, checkOut, personsNumber);
+
+            PaymentMethod paymentMethod =  paymentForm();
+            Payment payment = paymentService.createPayment(reservation , paymentMethod);
+
+            // save reservation and payment in one transaction
+            reservationTransactions.executeTransaction(reservation , payment);
+
             System.out.println("Reservation created Successfully");
             System.out.println(reservation.toString());
             return;
@@ -216,22 +237,15 @@ public class InputsUtil {
                     return;
                 }
 
-                for (int i = 0; i < reservations.size(); i++) {
-                    System.out.println((i + 1) + "- " + reservations.get(i));
-                }
+                String reservationId = inputsReader.readRequiredLine("Enter Reservation ID: ");
 
-                int choice = inputsReader.readPositiveInt("Select the reservation number to update: ");
-                if (choice < 1 || choice > reservations.size()) {
-                    throw new IllegalArgumentException("Invalid reservation selection.");
-                }
 
-                Reservation selected = reservations.get(choice - 1);
                 String checkIn = inputsReader.readRequiredLine("Enter new Check-In Date: ");
                 String checkOut = inputsReader.readRequiredLine("Enter new Check-Out Date: ");
                 int personsNumber = inputsReader.readPositiveInt("Enter new number of persons: ");
 
                 Reservation updated = reservationService.updateReservation(
-                        selected.getReservationID(),
+                        reservationId,
                         checkIn,
                         checkOut,
                         personsNumber
@@ -261,17 +275,10 @@ public class InputsUtil {
                     return;
                 }
 
-                for (int i = 0; i < reservations.size(); i++) {
-                    System.out.println((i + 1) + "- " + reservations.get(i));
-                }
+                String reservationId = inputsReader.readRequiredLine("Enter Reservation ID: ");
 
-                int choice = inputsReader.readPositiveInt("Select the reservation number to cancel: ");
-                if (choice < 1 || choice > reservations.size()) {
-                    throw new IllegalArgumentException("Invalid reservation selection.");
-                }
 
-                Reservation selected = reservations.get(choice - 1);
-                boolean cancelled = reservationService.cancelReservation(selected.getReservationID());
+                boolean cancelled = reservationService.cancelReservation(reservationId);
                 if (cancelled) {
                     System.out.println("Reservation cancelled successfully.");
                     return;
@@ -284,5 +291,21 @@ public class InputsUtil {
                 System.out.println("Please try again.\n");
             }
         }
+    }
+
+    public PaymentMethod paymentForm(){
+
+        System.out.println("=============== Chose Payment Method =============");
+
+        System.out.println("1- Cash");
+        System.out.println("2- bank transfer ");
+
+        int choicePaymentMethod = inputsReader.readIntWithRange("Select payment method : ", 1, 2);
+
+      return  switch (choicePaymentMethod) {
+            case 1 ->  PaymentMethod.CASH;
+            case 2 ->  PaymentMethod.BANK_TRANSFER;
+            default -> throw new IllegalArgumentException("invalid payment method");
+        };
     }
 }

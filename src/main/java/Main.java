@@ -1,15 +1,17 @@
 import Config.DatabaseConfig;
 import  ConsoleUI.AuthMenu;
 import  ConsoleUI.RoomManagmentMenu;
+import Models.Payment;
+import Repositories.PaymentRepository;
 import Repositories.UserRepository;
-import Repositories.impl.JdbcReservationRepo;
-import Repositories.impl.JdbcRoomRepo;
-import Repositories.impl.JdbcUserRepo;
+import Repositories.impl.*;
 import  Services.AuthService;
 import  Services.ReservationService;
 import  Services.RoomService;
 import  Utils.DatesUtil;
 import  Utils.InputsUtil;
+
+import java.sql.Connection;
 
 public class Main {
     public static void main(String[] args) {
@@ -22,6 +24,10 @@ public class Main {
         JdbcRoomRepo roomRepo = new JdbcRoomRepo(databaseConfig);
         JdbcReservationRepo reservationRepo = new JdbcReservationRepo(databaseConfig,userRepository,roomRepo);
 
+        PaymentJdbc paymentJdbc = new PaymentJdbc();
+
+
+        ReservationTransactionsJdbc reservationTransactions = new ReservationTransactionsJdbc(reservationRepo ,paymentJdbc , databaseConfig);
         DatesUtil datesUtil = new DatesUtil();
         RoomService roomService = new RoomService(roomRepo);
 
@@ -29,13 +35,15 @@ public class Main {
                 authService,
                 reservationRepo,
                 roomRepo,
-                datesUtil
+                datesUtil,
+                databaseConfig
         );
 
         InputsUtil inputsUtil = new InputsUtil(
                 authService,
                 reservationService,
-                roomService
+                roomService,
+                reservationTransactions
         );
 
         RoomManagmentMenu roomManagmentMenu = new RoomManagmentMenu(

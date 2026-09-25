@@ -37,14 +37,13 @@ public class JdbcReservationRepo implements ReservationRepository {
         this.reservationMapper = new ReservationMapper(userRepository , roomRepository);
     }
 
-    public Reservation save(Reservation reservation) {
+    public Reservation save( Connection connection, Reservation reservation) {
         String query = """
                 INSERT INTO reservations(reservation_id , client_id , room_id , check_in , check_out , nights , total , status , person_numbers)
                 VALUES(?,?,?,?,?,?,?,?,?)
                 """;
 
         try (
-                Connection connection = databaseConfig.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query)
         ) {
 
@@ -89,15 +88,79 @@ public class JdbcReservationRepo implements ReservationRepository {
         return ShowAll.showAll(clientId , query , databaseConfig, reservationMapper::map);
     }
 
+    @Override
     public Reservation update(Reservation reservation) {
         if (reservation == null || reservation.getReservationID() == null) {
-            return null;
+            throw new IllegalArgumentException("Reservation is required");
         }
-        reservations.put(reservation.getReservationID(), reservation);
-        return reservation;
+
+        String sql = """
+            UPDATE reservations
+            SET room_id = ?,
+                client_id = ?,
+                check_in = ?,
+                check_out = ?,
+                total = ?,
+                status = ?,
+                nights = ?
+            WHERE reservation_id = ?
+            """;
+
+        try (
+                Connection connection = databaseConfig.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setString(1, reservation.getRoom().getIdentify());
+            statement.setString(2, reservation.getClient().getId());
+            statement.setDate(3, Date.valueOf(reservation.getCheckIn()));
+            statement.setDate(4, Date.valueOf(reservation.getCheckOut()));
+            statement.setDouble(5, reservation.getTotal());
+            statement.setString(6, reservation.getStatus().name());
+            statement.setLong(7 , reservation.getNights());
+            statement.setString(8, reservation.getReservationID());
+
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new IllegalArgumentException(
+                        "Reservation with id " + reservation.getReservationID() + " not found"
+                );
+            }
+
+            return reservation;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Update reservation failed" + e.getMessage(),e);
+        }
     }
 
+    @Override
     public void delete(String reservationId) {
-        reservations.remove(reservationId);
+        if (reservationId == null || reservationId.isBlank()) {
+            throw new IllegalArgumentException("Reservation ID is required");
+        }
+
+        String sql = """
+            DELETE FROM reservations
+            WHERE reservation_id = ?
+            """;
+
+        try (
+                Connection connection = databaseConfig.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setString(1, reservationId);
+
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new IllegalArgumentException(
+                        "Reservation with id " + reservationId + " not found"
+                );
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Delete reservation failed", e);
+        }
     }
 }

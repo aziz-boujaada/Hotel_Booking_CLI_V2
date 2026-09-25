@@ -1,5 +1,6 @@
 package Services;
 
+import Config.DatabaseConfig;
 import  Enums.ReservationStatus;
 import  Enums.RoomStatus;
 import  Models.Reservation;
@@ -9,6 +10,8 @@ import Repositories.impl.JdbcReservationRepo;
 import Repositories.impl.JdbcRoomRepo;
 import  Utils.DatesUtil;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -19,17 +22,20 @@ public class ReservationService {
     private final JdbcReservationRepo reservationRepo;
     private final DatesUtil datesUtil;
     private final AuthService authService;
+    private final DatabaseConfig databaseConfig;
 
     public ReservationService(
             AuthService authService,
             JdbcReservationRepo reservationRepo,
             JdbcRoomRepo roomRepo,
-            DatesUtil datesUtil
+            DatesUtil datesUtil,
+            DatabaseConfig databaseConfig
     ) {
         this.roomRepository = roomRepo;
         this.datesUtil = datesUtil;
         this.reservationRepo = reservationRepo;
         this.authService = authService;
+        this.databaseConfig = databaseConfig;
     }
 
     public Reservation addNewReservation(String roomID, String checkIn, String checkOut, int personsNumber) {
@@ -64,7 +70,7 @@ public class ReservationService {
             throw new IllegalArgumentException("No user is logged in.");
         }
 
-        Reservation reservation = new Reservation(
+        return  new Reservation(
                 user,
                 room,
                 parsedCheckIn,
@@ -73,10 +79,9 @@ public class ReservationService {
                 total,
                 personsNumber,
                 ReservationStatus.CONFIRMED
+
         );
 
-        reservationRepo.save(reservation);
-        return reservation;
     }
 
     public List<Reservation> getMyReservations(User loggedUser) {

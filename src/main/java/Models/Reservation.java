@@ -17,6 +17,7 @@ public class Reservation {
     private double total;
     private ReservationStatus status;
     private int personneNumbers;
+    private LocalDate createdAt;
 
     public static int counter = 0;
 
@@ -30,10 +31,11 @@ public class Reservation {
         this.total = total;
         this.personneNumbers = personneNumbers;
         this.status = status;
+        this.createdAt =  createdAt;
     }
 
     //
-    public Reservation(String reservationID , User client, Room room, LocalDate checkIn, LocalDate checkOut, long nights, double total, int personneNumbers, ReservationStatus status) {
+    public Reservation(String reservationID, User client, Room room, LocalDate checkIn, LocalDate checkOut, long nights, double total, int personneNumbers, ReservationStatus status) {
         this.reservationID = reservationID;
         this.client = client;
         this.room = room;
@@ -128,6 +130,14 @@ public class Reservation {
         this.status = status;
     }
 
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
 
@@ -135,32 +145,35 @@ public class Reservation {
 
         return String.format(
                 """
-                        ================= Reservation =================
-                        Reservation ID : %s
                         
-                        Client
-                          Name         : %s
-                          Email        : %s
-                          Phone        : %s
+                        ======================== RESERVATION INFO ========================
                         
-                        Room
-                          Room ID      : %s
-                          Type         : %s
-                          Price        : %.2f MAD / night
-                          Capacity     : %d
-                          Status       : %s
+                        +----------------+------------+------------+--------+-------------+-----------
+                        | ID             | Check-In   | Check-Out  | Nights | Total       | Status   |
+                        +----------------+------------+------------+--------+-------------+-----------
+                       | %-14s | %-10s | %-10s | %-6d | %-11.2f | %-8s |
+                        +----------------+------------+------------+--------+-------------+                                                                         
+                        +----------------------+---------------------------+---------------+
+                        | Name                 | Email                     | Phone         |
+                        +----------------------+---------------------------+---------------+
+                        | %-20s | %-25s | %-13s |
+                        +----------------------+---------------------------+---------------+               
+                        ============================ ROOM INFO ============================
                         
-                        Stay
-                          Check-In     : %s
-                          Check-Out    : %s
-                          Nights       : %d
-                          Persons      : %d
+                        +--------------+----------------+----------+-------------+----------+
+                        | Room ID      | Type           | Capacity | Price/Night | Status   |
+                        +--------------+----------------+----------+-------------+----------+
+                        | %-12s | %-14s | %-8d | %-11.2f | %-8s |
+                        +--------------+----------------+----------+-------------+----------+
                         
-                        Total          : %.2f MAD
-                        Status         : %s
-                        =================================================
                         """,
                 reservationID,
+
+                checkIn,
+                checkOut,
+                nights,
+                total,
+                getStatus(),
 
                 userDto.fullName,
                 userDto.email,
@@ -168,17 +181,9 @@ public class Reservation {
 
                 room.getIdentify(),
                 room.getRoomType(),
-                room.getNightPrice(),
                 room.getCapacity(),
-                room.getRoomStatus(),
-
-                checkIn,
-                checkOut,
-                nights,
-                personneNumbers,
-
-                total,
-                status
+                room.getNightPrice(),
+                room.getRoomStatus()
         );
     }
 }
