@@ -31,7 +31,7 @@ public class Reservation {
         this.total = total;
         this.personneNumbers = personneNumbers;
         this.status = status;
-        this.createdAt =  createdAt;
+        this.createdAt = LocalDate.now();
     }
 
     //
@@ -45,6 +45,7 @@ public class Reservation {
         this.total = total;
         this.personneNumbers = personneNumbers;
         this.status = status;
+        this.createdAt = LocalDate.now();
     }
 
 

@@ -3,15 +3,19 @@ package Services;
 import Config.DatabaseConfig;
 import  Enums.ReservationStatus;
 import  Enums.RoomStatus;
-import  Models.Reservation;
+import Models.Payment;
+import Models.Reservation;
 import  Models.Room;
 import  Models.User;
+import Repositories.PaymentRepository;
 import Repositories.impl.JdbcReservationRepo;
+import Repositories.impl.PaymentJdbc;
 import Repositories.impl.JdbcRoomRepo;
 import  Utils.DatesUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +27,8 @@ public class ReservationService {
     private final DatesUtil datesUtil;
     private final AuthService authService;
     private final DatabaseConfig databaseConfig;
+    private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
 
     public ReservationService(
             AuthService authService,
@@ -31,11 +37,25 @@ public class ReservationService {
             DatesUtil datesUtil,
             DatabaseConfig databaseConfig
     ) {
+        this(authService, reservationRepo, roomRepo, datesUtil, databaseConfig, new PaymentJdbc(), new PaymentService());
+    }
+
+    public ReservationService(
+            AuthService authService,
+            JdbcReservationRepo reservationRepo,
+            JdbcRoomRepo roomRepo,
+            DatesUtil datesUtil,
+            DatabaseConfig databaseConfig,
+            PaymentRepository paymentRepository,
+            PaymentService paymentService
+    ) {
         this.roomRepository = roomRepo;
         this.datesUtil = datesUtil;
         this.reservationRepo = reservationRepo;
         this.authService = authService;
         this.databaseConfig = databaseConfig;
+        this.paymentRepository = paymentRepository;
+        this.paymentService = paymentService;
     }
 
     public Reservation addNewReservation(String roomID, String checkIn, String checkOut, int personsNumber) {
@@ -129,19 +149,44 @@ public class ReservationService {
     }
 
     public boolean cancelReservation(String reservationId) {
-        Optional<Reservation> OptionalReservation = reservationRepo.findById(reservationId);
-        if (OptionalReservation.isEmpty()) {
+        cancelReservationWithRefund(reservationId);
+        return true;
+    }
+
+    public PaymentService.RefundCalculation cancelReservationWithRefund(String reservationId) {
+        Optional<Reservation> optionalReservation = reservationRepo.findById(reservationId);
+        if (optionalReservation.isEmpty()) {
             throw new IllegalArgumentException("Reservation not found.");
         }
-         Reservation reservation = OptionalReservation.get();
-
-        if (!reservation.getClient().getId().equals(authService.getLoggedUser().getId())) {
+        Reservation reservation = optionalReservation.get();
+        User loggedUser = authService.getLoggedUser();
+        if (loggedUser == null || !reservation.getClient().getId().equals(loggedUser.getId())) {
             throw new IllegalArgumentException("You can only cancel your own reservation.");
         }
+        if (reservation.getStatus() != ReservationStatus.CONFIRMED) {
+            throw new IllegalArgumentException("Only confirmed reservations can be canceled.");
+        }
+
+        Payment payment;
+        try (Connection connection = databaseConfig.getConnection()) {
+            Optional<Payment> optionalPayment = paymentRepository.findByReservationId(connection, reservation);
+            if (optionalPayment.isEmpty()) {
+                throw new IllegalArgumentException("Payment not found for this reservation.");
+            }
+            payment = optionalPayment.get();
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not load payment for reservation cancellation.", e);
+        }
+
+        PaymentService.RefundCalculation refund = paymentService.calculateRefund(
+                payment.getAmountPayed(),
+                reservation.getCheckIn(),
+                LocalDateTime.now()
+        );
 
         reservation.setStatus(ReservationStatus.CANCELED);
         reservationRepo.update(reservation);
-        return true;
+        return refund;
     }
 
     public void checkAlreadyReserved(List<Reservation> reservations, LocalDate checkIn, LocalDate checkOut) {

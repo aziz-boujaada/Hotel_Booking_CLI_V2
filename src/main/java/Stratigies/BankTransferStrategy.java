@@ -8,10 +8,10 @@ import Models.Reservation;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class CashStrategy implements PaymentStrategy {
+public class BankTransferStrategy implements PaymentStrategy {
     @Override
     public Payment createPayment(Reservation reservation, double amount) {
         return new Payment("PAY-" + UUID.randomUUID(), reservation, amount,
-                PaymentMethod.CASH, PaymentStatus.PENDING, LocalDateTime.now());
+                PaymentMethod.BANK_TRANSFER, PaymentStatus.PENDING, LocalDateTime.now());
     }
 }

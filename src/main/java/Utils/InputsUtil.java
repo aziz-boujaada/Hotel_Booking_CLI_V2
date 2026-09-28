@@ -278,11 +278,11 @@ public class InputsUtil {
                 String reservationId = inputsReader.readRequiredLine("Enter Reservation ID: ");
 
 
-                boolean cancelled = reservationService.cancelReservation(reservationId);
-                if (cancelled) {
-                    System.out.println("Reservation cancelled successfully.");
-                    return;
-                }
+                PaymentService.RefundCalculation refund = reservationService.cancelReservationWithRefund(reservationId);
+                System.out.println("Reservation cancelled successfully.");
+                System.out.printf("Refund: %.2f (%d%%) | Penalty retained: %.2f%n",
+                        refund.getRefundAmount(), refund.getRefundPercentage(), refund.getPenaltyAmount());
+                return;
             } catch (IllegalArgumentException e) {
                 System.out.println("Cancellation failed: " + e.getMessage());
                 System.out.println("Please try again.\n");
